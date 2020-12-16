@@ -1,0 +1,10 @@
+import pandas as pd
+csv_file = pd.read_csv("C:/local/dateaset/new/train.csv")
+csv_file['emotion']=csv_file['emotion'].str.replace('angry','0')
+csv_file['emotion']=csv_file['emotion'].str.replace('disgust','1')
+csv_file['emotion']=csv_file['emotion'].str.replace('fear','2')
+csv_file['emotion']=csv_file['emotion'].str.replace('happiness','3')
+csv_file['emotion']=csv_file['emotion'].str.replace('sadness','4')
+csv_file['emotion']=csv_file['emotion'].str.replace('surprise','5')
+csv_file['emotion']=csv_file['emotion'].str.replace('neutral','6')
+csv_file.to_csv("C:/local/dateaset/new/train.csv")
