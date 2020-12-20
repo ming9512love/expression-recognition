@@ -9,7 +9,7 @@ import torchvision
 import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
 from torch.utils.data.sampler import SubsetRandomSampler
-from torchvision import transforms
+from torchvision import transforms as tfs
 
 from data_loaders import Plain_Dataset, eval_data_dataloader
 from deep_emotion import Deep_Emotion
@@ -177,6 +177,18 @@ def plot_acc(train, val):
     plt.savefig('acc_pic.png')
     plt.show()
 
+def train_tf(x):
+    
+    im_aug = tfs.Compose([
+        tfs.RandomHorizontalFlip(),
+        tfs.RandomVerticalFlip(),
+        tfs.RandomRotation(20),
+        tfs.ToTensor(),
+        tfs.Normalize((0.5,),(0.5,))
+    ])
+    x = im_aug(x)
+    return x
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Configuration of setup and training process")
     parser.add_argument('-s', '--setup', type=bool, help='setup the dataset for the first time')
@@ -215,9 +227,9 @@ if __name__ == '__main__':
         train_img_dir = args.data+'/'+'train/'
         validation_img_dir = args.data+'/'+'val/'
 
-        transformation= transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5,),(0.5,))])
-        train_dataset= Plain_Dataset(csv_file=traincsv_file, img_dir = train_img_dir, datatype = 'train', transform = transformation)
-        validation_dataset= Plain_Dataset(csv_file=validationcsv_file, img_dir = validation_img_dir, datatype = 'val', transform = transformation)
+        transformation2= tfs.Compose([tfs.ToTensor(),tfs.Normalize((0.5,),(0.5,))])
+        train_dataset= Plain_Dataset(csv_file=traincsv_file, img_dir = train_img_dir, datatype = 'train', transform = train_tf)
+        validation_dataset= Plain_Dataset(csv_file=validationcsv_file, img_dir = validation_img_dir, datatype = 'val', transform = transformation2)
         train_loader= DataLoader(train_dataset,batch_size=batchsize,shuffle = True,num_workers=0)
         val_loader=   DataLoader(validation_dataset,batch_size=batchsize,shuffle = True,num_workers=0)
 
